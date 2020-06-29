@@ -157,6 +157,7 @@ segments(as.Date("2016-11-01"), tail(t_11,1)$mean_monthly_amount, as.Date("2016-
          
 
 #### Apply model to all industries and locations ####
+
 # Create evaluation and predictions empty dataframe
 evaluation_table <- data.frame(
                             industry = integer(),

@@ -4,7 +4,7 @@
 
 This report is written with the purpose of presenting the results of the forecast and method used to a sales manager - without code excerpts - following the [CRISP-DM methodology](https://www.sv-europe.com/crisp-dm-methodology/). 
 
-To have a look at the commented code check the R [script](https://github.com/SandraLeriche/salesforecast/tree/master/scripts). 
+To have a look at the commented code check the [R script](https://github.com/SandraLeriche/salesforecast/tree/master/scripts). 
 
 Here are the key steps followed in this project:
 

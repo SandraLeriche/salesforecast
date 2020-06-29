@@ -88,6 +88,10 @@ The model will only run on industries and locations with a minimum of 36 months 
 
 The linear regression model has an adjusted r-square of 0.80 on the trainset of industry 1, location 1 with an MAE (Mean Absolute Error) of 5.17 % which is a statistically significant value to confirm the model is a good fit.
 
+[Actuals vs Predicted graph:](https://github.com/SandraLeriche/salesforecast/blob/master/images/ind1loc1actualsvspredicted.jpg)
+
+See the trend and forecast for industry 1 and location 1 [here](https://github.com/SandraLeriche/salesforecast/blob/master/images/forecast_dec_2016_ind1_loc1.JPG)
+
 
 ## Evaluation
 
@@ -119,7 +123,7 @@ In the future, more specific eligibility criteria could be defined to decide whi
 - Industry - location combinations that do not have any sales recorded for the year in which the model is predicting (2016) would not be included as the business might be closed and there is not going to be any sales.  
 
 - Include any public holiday period - requires to know the country and whether or not the business was closed - it could be identified that sales following a day the business was closed increased and account for it in the predictions of these days.
-- 
+
 - To add confidence in the results, only predict for industries and locations that have complete data (47 months in this instance).
 
 

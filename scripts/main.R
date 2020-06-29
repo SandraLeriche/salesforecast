@@ -1,5 +1,4 @@
-### Data, Algorithms and Meaning - Autumn 2020 ###
-### Assignment 1 - Linear Regression ###
+### Sales Forecasting using Linear Regression ###
 ### Objective: Prediction of December 2016 ###
 
 # clear environment
@@ -9,13 +8,15 @@ rm(list = ls())
 library(tidyverse)
 library(lubridate)
 library(hydroGOF)
+library(funModeling)
 
 # read data
-transactions <- read.csv("~/R/DAM AT1/transactions.csv")
+transactions <- read.csv("transactions.csv")
 
 #### Exploratory Data Analysis ####
-summary(transactions)
-str(transactions)
+summary(transactions) # Monthly Amount shows min of 0 and max of 1 000 000 000, 10 industries and 10 locations, mean monthly amount of 395 397, data from Jan 2013 to Nov 2016
+str(transactions) # 94248 sales records, 4464 unique customer IDs
+df_status(transactions) # Check for missing values - No NAs
 
 ### variable transformation ###
 transactions$date <- as.Date(transactions$date, format = "%d/%m/%y")
@@ -56,7 +57,7 @@ for (industry in unique(transactions$industry)) {
 #### end of exploration ####
 
 
-# identify outliers - check 5 std from mean per industry per location per year per month to consider seasonality. 
+# identify outliers - check 5 std from mean per industry per location per year per month to consider seasonality and volume of each industry / location. 
 
 outliers <- transactions[0,]
 
@@ -77,7 +78,7 @@ for (industry in unique(transactions$industry)) {
 # clean environment
 rm(tmp, ts, transactions.subset, transactions.subset.lm.linear, sds, month, year, industry, location, mean)
 
-# Run below to remove outliers from transactions if needed after consulting the sales manager
+# Run below line to remove outliers from transactions - keeping them for now
 # transactions <- transactions %>% anti_join(outliers)
 
 # Create an aggregated data set using date, industry, location, mean of monthly amount
@@ -102,7 +103,7 @@ t_11$month <- as.factor(t_11$month)
 t_11$year <-  as.factor(t_11$year)
 
 # Split between train and test 
-# 90 train 10 test to capture data as close as december 2016 as possible
+# 90 train 10 test to capture data in 2016
 
 split <- round(nrow(t_11) * 0.90)
 trainset <- t_11[1:split, ]
@@ -121,7 +122,7 @@ t11_model2 <- lm(formula = mean_monthly_amount ~ month + year, data = trainset)
 summary(t11_model2)$adj.r.squared # adjusted r-square 0.8024
 
 
-# Predictions on test set
+# Predictions on test set using multiple linear regression
 prediction <- predict.lm(t11_model2, testset, type="response", interval="confidence", level=0.95)
 
 

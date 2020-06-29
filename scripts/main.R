@@ -19,6 +19,7 @@ str(transactions) # 94248 sales records, 4464 unique customer IDs
 df_status(transactions) # Check for missing values - No NAs
 
 ### variable transformation ###
+# Split date into year and month to help with visualisation and model
 transactions$date <- as.Date(transactions$date, format = "%d/%m/%y")
 transactions <- transactions %>%
   mutate(year = lubridate::year(date),
@@ -53,11 +54,7 @@ for (industry in unique(transactions$industry)) {
   }
 }
 
-
-#### end of exploration ####
-
-
-# identify outliers - check 5 std from mean per industry per location per year per month to consider seasonality and volume of each industry / location. 
+# identify potential outliers - check 5 std from mean per industry per location per year per month to consider seasonality and volume of each industry / location. 
 
 outliers <- transactions[0,]
 
@@ -75,11 +72,13 @@ for (industry in unique(transactions$industry)) {
   }
 }
 
-# clean environment
-rm(tmp, ts, transactions.subset, transactions.subset.lm.linear, sds, month, year, industry, location, mean)
-
 # Run below line to remove outliers from transactions - keeping them for now
 # transactions <- transactions %>% anti_join(outliers)
+
+#### end of exploration ####
+
+# clean environment
+rm(tmp, ts, transactions.subset, transactions.subset.lm.linear, sds, month, year, industry, location, mean)
 
 # Create an aggregated data set using date, industry, location, mean of monthly amount
 t_mean <- transactions %>%
@@ -88,11 +87,10 @@ t_mean <- transactions %>%
     mean_monthly_amount = mean(monthly_amount)
   )
 
-
 # Exploring industry 1 location 1 using subset
 t_11 <- subset(t_mean, industry == 1 & location == 1)
 
-# Remove industry 1 and location 1 variables
+# Remove industry and location variables
 t_11 <- t_11[,-c(2:3)]
 
 # plot industry 1 location 1
@@ -102,25 +100,25 @@ ggplot(t_11, aes(date, mean_monthly_amount)) + geom_line() + geom_point() + geom
 t_11$month <- as.factor(t_11$month)
 t_11$year <-  as.factor(t_11$year)
 
+#### Prepare data for modelling on industry 1 location 1 only ####
 # Split between train and test 
-# 90 train 10 test to capture data in 2016
+# 90 train 10 test to capture data in 2016, from floor to keep the chronological order
 
 split <- round(nrow(t_11) * 0.90)
 trainset <- t_11[1:split, ]
 testset <- t_11[(split + 1):nrow(t_11), ]
 
-# Single linear regression on all data
+# Single linear regression on train set
 t11_model = lm(formula =  mean_monthly_amount ~ date, data = trainset)
 
 # Analyse model output
 summary(t11_model)$adj.r.squared  # adjusted r-square 0.44
 
-# Multiple linear regression with dummy variables - Seasonality
+# Multiple linear regression with month + year as factors - Seasonality
 t11_model2 <- lm(formula = mean_monthly_amount ~ month + year, data = trainset) 
 
-# Analyse model output #
+# Analyse model output 
 summary(t11_model2)$adj.r.squared # adjusted r-square 0.8024
-
 
 # Predictions on test set using multiple linear regression
 prediction <- predict.lm(t11_model2, testset, type="response", interval="confidence", level=0.95)
@@ -158,7 +156,8 @@ points(as.Date("2016-12-01"), fcast_dec_2016, col = "red")
 segments(as.Date("2016-11-01"), tail(t_11,1)$mean_monthly_amount, as.Date("2016-12-01"), fcast_dec_2016, col = "red")
          
 
-# Apply model to all industries and locations
+#### Apply model to all industries and locations ####
+# Create evaluation and predictions empty dataframe
 evaluation_table <- data.frame(
                             industry = integer(),
                             location = integer(),
@@ -180,6 +179,7 @@ predictions_table <- data.frame(
                             December_2016 = numeric()
                           )
 
+# For loop to apply model to all industry + location combinations with min 36 months of sales records
 for (ind in unique(t_mean$industry)) {
   for (loca in unique(t_mean$location)) {
     ts <- subset(t_mean, industry == ind & location == loca)
@@ -203,6 +203,7 @@ for (ind in unique(t_mean$industry)) {
     ts.testset$location = loca
     ts.testset$december_2016 = fcast.ts.dec_2016
     
+    # Fill evaluation table with selected measures
     evaluation_table <- rbind(evaluation_table, list(
                                 industry = ind,
                                 location = loca,
@@ -213,7 +214,7 @@ for (ind in unique(t_mean$industry)) {
                                 forecast = fcast.ts.dec_2016)
                                )
 
-
+    # Fill predictions table with forecast
     predictions_table <- rbind(predictions_table, list(
                             Industry = ts.testset$industry,
                             Location = ts.testset$location,
@@ -227,5 +228,6 @@ for (ind in unique(t_mean$industry)) {
   }
 }
 
-# Export csv
-# write.csv(predictions_table,"./predictions.csv", row.names = FALSE)
+# Export evaluations and predictions as csv
+write.csv(evaluation_table, "./evaluations.csv", row.names = FALSE)
+write.csv(predictions_table,"./predictions.csv", row.names = FALSE)

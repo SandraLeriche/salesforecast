@@ -88,9 +88,9 @@ The model will only run on industries and locations with a minimum of 36 months 
 
 The linear regression model has an adjusted r-square of 0.80 on the trainset of industry 1, location 1 with an MAE (Mean Absolute Error) of 5.17 % which is a statistically significant value to confirm the model is a good fit.
 
-[Actuals vs Predicted graph](https://github.com/SandraLeriche/salesforecast/blob/master/images/ind1loc1actualsvspredicted.jpg)
+![Actuals vs Predicted graph](https://github.com/SandraLeriche/salesforecast/blob/master/images/ind1loc1actualsvspredicted.jpg)
 
-See the trend and forecast for industry 1 and location 1 [here](https://github.com/SandraLeriche/salesforecast/blob/master/images/forecast_dec_2016_ind1_loc1.JPG)
+![See the trend and forecast for industry 1 and location 1](https://github.com/SandraLeriche/salesforecast/blob/master/images/forecast_dec_2016_ind1_loc1.JPG)
 
 
 ## Evaluation

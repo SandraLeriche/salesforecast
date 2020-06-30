@@ -4,7 +4,7 @@
 
 This report is written with the purpose of presenting the results of the forecast and method used to a sales manager - without code excerpts - following the [CRISP-DM methodology](https://www.sv-europe.com/crisp-dm-methodology/). 
 
-To have a look at the commented code check the R [scripts](https://github.com/SandraLeriche/salesforecast/tree/master/scripts) folder. 
+To have a look at the commented code check the [R script](https://github.com/SandraLeriche/salesforecast/tree/master/scripts). 
 
 Here are the key steps followed in this project:
 
@@ -18,6 +18,8 @@ Here are the key steps followed in this project:
  8. Output sales predictions as CSV file
 
 Data: [transactions](https://github.com/SandraLeriche/salesforecast/blob/master/data/transactions.csv), [evalutations](https://github.com/SandraLeriche/salesforecast/blob/master/data/evaluations.csv), [predictions](https://github.com/SandraLeriche/salesforecast/blob/master/data/predictions.csv) 
+
+Visuals: [Actuals vs Predicted](https://github.com/SandraLeriche/salesforecast/blob/master/images/ind1loc1actualsvspredicted.jpg), [December 2016 forecast industry 1 location 1](https://github.com/SandraLeriche/salesforecast/blob/master/images/forecast_dec_2016_ind1_loc1.JPG), [trends per industry/location](https://github.com/SandraLeriche/salesforecast/tree/master/images)
 
 ## Report
 
